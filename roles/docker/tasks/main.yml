@@ -1,0 +1,63 @@
+- name: Install prerequisites for Docker repository
+  become: true
+  apt: 
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - software-properties-common
+    force_apt_get: True
+    update_cache: yes
+
+- name: Add Docker GPG key
+  become: true
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+
+- name: Add Docker APT repository.
+  become: true
+  apt_repository:
+    #repo: deb [arch=amd64] https://download.docker.com/{{ ansible_system | lower }}/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+
+- name:  Install Docker CE.
+  become: true
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    force_apt_get: True
+    update_cache: yes
+    allow_unauthenticated: yes
+
+- name: Install Docker-compose.
+  become: true
+  get_url:
+    url: "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-{{ansible_system}}-{{ansible_architecture}}"
+    dest: /usr/local/bin/docker-compose
+    mode: +x
+
+- name: Changing permission of "/var/run/docker.sock", adding "777"
+  become: true
+  file: 
+    dest: /var/run/docker.sock
+    mode: 0777
+
+- name: Pull Docker image
+  docker_image:
+    name: hiremostafa/express-demo:1.0.1
+    source: pull
+
+- name: Run Docker container
+  docker_container:
+    name: express_demo
+    image: hiremostafa/express-demo:1.0.1
+    state: started
+    published_ports:
+      - "3006:3006"
+    env:
+      name: kamal
+
+

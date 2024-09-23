@@ -1,0 +1,6 @@
+---
+- name: Configure Nginx on web servers
+  hosts: web_servers
+  become: yes
+  roles:
+    - nginx

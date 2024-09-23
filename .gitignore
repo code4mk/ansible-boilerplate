@@ -1,0 +1,17 @@
+# Ignore Ansible Vault files
+*.vault
+
+# Ignore temporary files
+*.retry
+*.log
+
+# Ignore other common files
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+.env
+
+credentials/*
+!credentials/README.md

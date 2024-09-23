@@ -1,0 +1,6 @@
+---
+- name: Configure Docker on Web Servers
+  hosts: web_servers
+  become: yes
+  roles:
+    - docker

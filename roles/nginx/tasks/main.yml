@@ -1,0 +1,60 @@
+---
+- name: Install Nginx
+  become: true
+  apt:
+    name: nginx
+    force_apt_get: true
+    update_cache: yes
+
+- name: Ensure Nginx sites-available directory exists
+  file:
+    path: /etc/nginx/sites-available
+    state: directory
+    mode: '0755'
+
+- name: Ensure Nginx sites-enabled directory exists
+  file:
+    path: /etc/nginx/sites-enabled
+    state: directory
+    mode: '0755'
+
+- name: Ensure website directory exists
+  file:
+    path: "/var/www/{{ server_name }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Deploy Nginx site configuration
+  template:
+    src: "nginx.conf.j2"
+    dest: "/etc/nginx/sites-available/{{ server_name }}.conf"
+  notify: Reload Nginx
+
+- name: Enable Nginx site configuration
+  file:
+    src: "/etc/nginx/sites-available/{{ server_name }}.conf"
+    dest: "/etc/nginx/sites-enabled/{{ server_name }}.conf"
+    state: link
+  notify: Reload Nginx
+
+- name: Remove default Nginx site configuration
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: Reload Nginx
+
+- name: Copy index.html to Nginx root
+  copy:
+    src: index.html
+    dest: "/var/www/{{ server_name }}/index.html"
+    owner: www-data
+    group: www-data
+    mode: '0644'
+
+- name: Ensure Nginx is started and enabled
+  service:
+    name: nginx
+    state: started
+    enabled: yes
