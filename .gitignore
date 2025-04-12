@@ -1,3 +1,8 @@
+# Ansible
+*.retry
+*.pyc
+__pycache__/
+
 # Ignore Ansible Vault files
 *.vault
 
@@ -8,10 +13,31 @@
 # Ignore other common files
 *.swp
 *.swo
+
+
+# OS generated files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 
+# Environment variables
 .env
 
+# Credentials
 credentials/*
 !credentials/README.md
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.bak
